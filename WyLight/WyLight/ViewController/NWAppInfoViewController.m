@@ -10,8 +10,6 @@
 
 @interface NWAppInfoViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *appVersionLabel;
-@property (weak, nonatomic) IBOutlet UILabel *fwVersionLabel;
-@property (weak, nonatomic) IBOutlet UILabel *hexVersionLabel;
 
 @end
 
@@ -19,8 +17,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
 	self.appVersionLabel.text = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
-	self.fwVersionLabel.text = [self.controlHandle readCurrentFirmwareVersionFromFirmware];
-	self.hexVersionLabel.text = [self.controlHandle readCurrentFirmwareVersionFromHexFile];
 }
 
 

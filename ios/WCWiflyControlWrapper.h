@@ -16,16 +16,16 @@
 @property (nonatomic, weak) id <WCWiflyControlDelegate> delegate;
 
 // Configuration
-- (id)initWithWCEndpoint:(WCEndpoint *)endpoint establishConnection:(BOOL)connect;
+- (id)initWithWCEndpoint:(WCEndpoint *)endpoint establishConnection:(BOOL)connect doStartup:(BOOL)doStartup;
 
 /**
- * Attention: After executing one of the next three command's you have to disconnect your WCWiflyControlWrapper object
+ * ATTENTION: After executing one of the next three command's you have to disconnect your WCWiflyControlWrapper object
  * The CommandExecutedNotification tell's you the succesfull execution of a command
  */
 - (void)configurateWlanModuleAsClientForNetwork:(NSString *)ssid password:(NSString *)password name:(NSString *)name;
 - (void)configurateWlanModuleAsSoftAP:(NSString *)ssid;
 - (void)rebootWlanModul;
-- (void)updateWlanModuleForFwVersion:(NSString *)version;
+
 
 // Firmware methods
 - (void)setColorDirect:(UIColor *)newColor;
@@ -46,36 +46,26 @@
 - (void)clearScript;
 - (NSDate *)readRtcTime;
 - (void)writeRtcTime;
-- (NSString *)readCurrentFirmwareVersionFromFirmware;
-- (void)enterBootloaderAsync:(BOOL)async;
 
-- (void)updateFirmware;
-
-// Bootloader methods
-- (NSString *)readCurrentFirmwareVersionFromBootloder;
-- (void)eraseEepromAsync:(BOOL)async;
-- (void)programFlashAsync:(BOOL)async;
-- (void)leaveBootloader;
-- (int)connect;
+- (int)connectWithStartup:(BOOL)doStartup;
 - (void)disconnect;
-
-// Version extract methode
-- (NSString *)readCurrentFirmwareVersionFromHexFile;
 
 @end
 
 @protocol WCWiflyControlDelegate
 
-@optional
 // dealloc this object to disconnet, if this error occure
-- (void) fatalErrorOccured:(WCWiflyControlWrapper *)sender errorCode:(NSNumber *)errorCode;
-
-// send clearscript to target to fix this error
-- (void) scriptFullErrorOccured:(WCWiflyControlWrapper *)sender errorCode:(NSNumber*)errorCode;
+- (void) wiflyControl:(WCWiflyControlWrapper *)sender fatalErrorOccured:(NSNumber *)errorCode;
 
 // This delegate tells you that a wlan configuration command finished successfull. !!!! dealloc this object if you receive this message.
 // Internally the control object has to disconnect after a wlan configuration command
 - (void) wiflyControlHasDisconnected:(WCWiflyControlWrapper *)sender;
+
+@optional
+// send clearscript to target to fix this error
+- (void) wiflyControl:(WCWiflyControlWrapper *)sender scriptBufferErrorOccured:(NSNumber *)errorCode;
+
+- (void) wiflyControl:(WCWiflyControlWrapper *)sender connectionStartupStateChanged:(NSNumber *)state;
 @end
 
 

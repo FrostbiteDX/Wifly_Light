@@ -8,18 +8,17 @@
 
 #import <UIKit/UIKit.h>
 
-@class NWScriptCommandObject, NWTimeValueEditView;
+@class ComplexEffect, NWTimeValueEditView;
 
 @protocol NWTimeValueEditViewDelegate <NSObject>
 
-- (void)TimeValueEditView:(NWTimeValueEditView *)view switchValueChanged:(BOOL)on;
-- (void)TimeValueEditView:(NWTimeValueEditView *)view sliderValueChanged:(CGFloat)value;
+- (void)TimeValueEditView:(NWTimeValueEditView *)view timeValueChanged:(NSNumber *)value;
 
 @end
 
 @interface NWTimeValueEditView : UIView
 
-@property (nonatomic, weak) NWScriptCommandObject *command;
+@property (nonatomic, weak) ComplexEffect *command;
 @property (nonatomic, weak) id<NWTimeValueEditViewDelegate> delegate;
 @property (nonatomic) CGFloat cornerRadius;
 

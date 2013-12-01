@@ -6,9 +6,9 @@
 //  Copyright (c) 2013 Nils Weiß. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "NWScriptObjectControl.h"
 
-@interface NWScriptObjectView : UIView
+@interface NWScriptObjectView : NWScriptObjectControl
 
 @property (nonatomic, strong) NSArray *startColors;
 @property (nonatomic, strong) NSArray *endColors;
@@ -17,5 +17,5 @@
 @property (nonatomic) CGFloat orientation;
 
 - (void)setColorsAnimatedWithDuration:(NSTimeInterval)duration startColors:(NSArray *)startColors endColor:(NSArray *)endColors;
-
+- (void)setStartColors:(NSArray *)startColors withEndcolors:(NSArray *)endColors;
 @end

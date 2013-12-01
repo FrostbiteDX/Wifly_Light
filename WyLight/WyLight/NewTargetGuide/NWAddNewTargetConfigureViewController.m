@@ -108,20 +108,33 @@
 #pragma mark - TextField Stuff
 
 - (BOOL)textFieldInputValid {
+    NSCharacterSet * set = [[NSCharacterSet characterSetWithCharactersInString:@"-_/:.,;+*#<>()=?abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLKMNOPQRSTUVWXYZ0123456789"] invertedSet];
 	if (self.configureTargetAsSoftAP) {
 		if (![self.ssidTextField.text length]){
-			[[[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"InvalidInputKey", @"ViewControllerLocalization", @"")
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"InvalidInputKey", @"ViewControllerLocalization", @"")
                                         message:NSLocalizedStringFromTable(@"CompleteInputKey", @"ViewControllerLocalization", @"")
                                        delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
 			return NO;
 		}
+        /*if ([self.ssidTextField.text rangeOfCharacterFromSet:set].location != NSNotFound) {
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"InvalidInputKey", @"ViewControllerLocalization", @"")
+                                        message:NSLocalizedStringFromTable(@"InvalidInputKey2", @"ViewControllerLocalization", @"")
+                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+            return NO;
+        }*/
 	} else {
 		if (![self.ssidTextField.text length] || ![self.passTextField.text length] || ![self.nameTextField.text length]) {
 			[[[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"InvalidInputKey", @"ViewControllerLocalization", @"")
-                                        message:NSLocalizedStringFromTable(@"CompleteInputsKey", @"ViewControllerLocalization", @"")
+                                        message:NSLocalizedStringFromTable(@"CompleteInputKey", @"ViewControllerLocalization", @"")
                                        delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
 			return NO;
-		}
+		}/*
+        if ([self.ssidTextField.text rangeOfCharacterFromSet:set].location != NSNotFound) {
+            [[[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"InvalidInputKey", @"ViewControllerLocalization", @"")
+                                        message:NSLocalizedStringFromTable(@"InvalidInputKey2", @"ViewControllerLocalization", @"")
+                                       delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+            return NO;
+        }*/
 	}
 	return YES;
 }
@@ -143,7 +156,7 @@
 																													   port:2000
 																													   name:@"newTarget"
 																													  score:0]
-																   establishConnection:YES];
+																   establishConnection:YES doStartup:NO];
 			if (self.controlHandle == nil) {
 				dispatch_async(dispatch_get_main_queue(), ^{
 					[self performSegueWithIdentifier:@"unwindAtConnectionFatalErrorOccured:" sender:self];
@@ -153,26 +166,6 @@
 			}
 			[self.controlHandle setDelegate:self];
 						
-			//Erase eeprom
-			dispatch_async(dispatch_get_main_queue(), ^{
-				self.scanningAlertView.message = @"Erase eeprom of target!";
-			});
-			[self.controlHandle eraseEepromAsync:NO];
-			[NSThread sleepForTimeInterval:1];
-			
-			//Firmware update
-			dispatch_async(dispatch_get_main_queue(), ^{
-				self.scanningAlertView.message = @"Updating target firmware!";
-			});
-			[self.controlHandle programFlashAsync:NO];
-							
-			//Start Firmware
-			dispatch_async(dispatch_get_main_queue(), ^{
-				self.scanningAlertView.message = @"Terminate bootloader and start firmware!";
-			});
-			[self.controlHandle leaveBootloader];
-			[NSThread sleepForTimeInterval:0.4];
-			
 			//Configure WLAN Modul
 			dispatch_async(dispatch_get_main_queue(), ^{
 				self.scanningAlertView.message = @"Configure wlan interface!";
@@ -223,7 +216,7 @@
 
 #pragma mark - WCWiflyControlDelegate
 
-- (void) fatalErrorOccured:(WCWiflyControlWrapper *)sender errorCode:(NSNumber *)errorCode {
+- (void)wiflyControl:(WCWiflyControlWrapper *)sender fatalErrorOccured:(NSNumber *)errorCode {
 	NSLog(@"FatalError: ErrorCode = %d\n", [errorCode unsignedIntValue]);
 	[self performSegueWithIdentifier:@"unwindAtConnectionFatalErrorOccured:" sender:self];
 }
